@@ -1,0 +1,6 @@
+uvicorn[standard]
+fastapi
+aioredis
+pytest
+pytest-asyncio
+jinja2

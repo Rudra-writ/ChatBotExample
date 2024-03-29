@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        #chat-container {
+            width: 1000px; 
+            border: 1px solid #2e0d0d; 
+            padding: 20px; 
+        }
+
+        #chat-box {
+            overflow-y: auto; 
+            max-height: 300px; 
+        }
+
+        #message-container {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        #message-input {
+            flex: 1;
+        }
+
+        button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>Chat Bot</h1>
+        <div id="chat-box"></div>
+        <div id="message-container">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const messageInput = document.getElementById('message-input');
+        
+        const ws = new WebSocket('ws://localhost:8000/chat');
+
+        ws.onopen = () => {
+            console.log('WebSocket connected.');
+        };
+
+        ws.onmessage = (event) => {
+            const message = event.data;
+            displayMessage('Bot', message);
+        };
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                ws.send(message);
+                displayMessage('You', message);
+                messageInput.value = '';
+            }
+        }
+
+        function displayMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${sender}: ${message}`;
+            chatBox.appendChild(messageElement);
+        }
+    </script>
+</body>
+</html>
+
+
